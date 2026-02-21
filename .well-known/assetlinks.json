@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.countdownapp.countdown_app",
+      "sha256_cert_fingerprints": [
+        "58:32:18:CF:7A:D3:86:4C:68:05:78:A9:05:2A:38:33:26:2E:BC:E4:DB:83:D6:E5:B9:92:1E:B6:97:B5:E0:BA"
+      ]
+    }
+  }
+]

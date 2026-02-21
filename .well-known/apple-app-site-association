@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "KP8X9K8F44.com.countdownapp.countdownApp",
+        "paths": ["/s", "/s/*", "/s?*"]
+      }
+    ]
+  }
+}
