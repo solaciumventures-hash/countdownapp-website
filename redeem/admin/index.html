@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countdown — Offer Code Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent: #0D6B6E;
+      --accent-light: #A8D5E2;
+      --bg: #0a1a1a;
+      --surface: rgba(255, 255, 255, 0.06);
+      --surface-border: rgba(255, 255, 255, 0.08);
+      --on-surface: #F0F5F5;
+      --on-surface-variant: #9BB5B5;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--on-surface);
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--on-surface-variant);
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    /* Auth gate */
+    .auth-gate { display: none; }
+    .auth-gate.active { display: block; }
+
+    .auth-input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--surface-border);
+      background: var(--surface);
+      color: var(--on-surface);
+      font-size: 15px;
+      font-family: inherit;
+      margin-bottom: 12px;
+    }
+
+    .auth-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Dashboard */
+    .dashboard { display: none; }
+    .dashboard.active { display: block; }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .section h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    /* Campaign cards */
+    .campaign {
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--surface-border);
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .campaign:last-child { margin-bottom: 0; }
+
+    .campaign-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .campaign-name {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .campaign-stats {
+      font-size: 14px;
+      color: var(--on-surface-variant);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
+
+    .progress-fill.warning { background: #e6a817; }
+    .progress-fill.critical { background: #e05252; }
+
+    .campaign-link {
+      font-size: 13px;
+      color: var(--accent-light);
+      text-decoration: none;
+    }
+
+    .recent-claims {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--on-surface-variant);
+    }
+
+    .recent-claims summary {
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--on-surface-variant);
+    }
+
+    .recent-claims li {
+      margin: 4px 0;
+      font-family: 'SF Mono', monospace;
+      font-size: 11px;
+    }
+
+    .no-campaigns {
+      color: var(--on-surface-variant);
+      font-size: 14px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* Upload form */
+    .form-group { margin-bottom: 16px; }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--surface-border);
+      background: var(--surface);
+      color: var(--on-surface);
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s;
+    }
+
+    .btn:hover { opacity: 0.9; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .upload-result {
+      margin-top: 12px;
+      font-size: 14px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .upload-result.ok {
+      display: block;
+      background: rgba(13, 107, 110, 0.15);
+      color: var(--accent-light);
+    }
+
+    .upload-result.err {
+      display: block;
+      background: rgba(255, 80, 80, 0.1);
+      color: #ff8888;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Offer Code Admin</h1>
+    <p class="subtitle">Manage redemption campaigns for Countdown App.</p>
+
+    <!-- Auth gate -->
+    <div class="auth-gate active" id="authGate">
+      <div class="section">
+        <input type="password" class="auth-input" id="keyInput"
+               placeholder="Enter admin key" autocomplete="off"
+               onkeydown="if(event.key==='Enter') authenticate()">
+        <button class="btn" onclick="authenticate()" style="width:100%;">
+          Sign In
+        </button>
+      </div>
+    </div>
+
+    <!-- Dashboard (hidden until authenticated) -->
+    <div class="dashboard" id="dashboard">
+
+      <!-- Campaigns overview -->
+      <div class="section">
+        <h2>Campaigns</h2>
+        <div id="campaignList">
+          <p class="no-campaigns">Loading…</p>
+        </div>
+      </div>
+
+      <!-- Upload codes -->
+      <div class="section">
+        <h2>Upload Codes</h2>
+        <div class="form-group">
+          <label for="campaignName">Campaign name</label>
+          <input type="text" id="campaignName" placeholder="e.g. iosapps, apphookup">
+        </div>
+        <div class="form-group">
+          <label for="codesInput">Codes (one per line)</label>
+          <textarea id="codesInput" placeholder="ABCD-1234-EFGH&#10;IJKL-5678-MNOP&#10;QRST-9012-UVWX"></textarea>
+        </div>
+        <button class="btn" id="uploadBtn" onclick="uploadCodes()">
+          Upload Codes
+        </button>
+        <div class="upload-result" id="uploadResult"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let adminKey = "";
+
+    // Check if key is stored in session or passed via URL.
+    function init() {
+      const url = new URL(window.location);
+      const keyParam = url.searchParams.get("key");
+      const stored = sessionStorage.getItem("adminKey");
+
+      if (keyParam) {
+        adminKey = keyParam;
+        // Remove key from URL for cleanliness.
+        url.searchParams.delete("key");
+        window.history.replaceState({}, "", url.toString());
+        sessionStorage.setItem("adminKey", adminKey);
+        showDashboard();
+      } else if (stored) {
+        adminKey = stored;
+        showDashboard();
+      }
+    }
+
+    function authenticate() {
+      const input = document.getElementById("keyInput");
+      adminKey = input.value.trim();
+      if (!adminKey) return;
+      sessionStorage.setItem("adminKey", adminKey);
+      showDashboard();
+    }
+
+    function showDashboard() {
+      document.getElementById("authGate").classList.remove("active");
+      document.getElementById("dashboard").classList.add("active");
+      loadStats();
+    }
+
+    // ── Load campaign stats ────────────────────────────────────────
+    async function loadStats() {
+      const container = document.getElementById("campaignList");
+      container.innerHTML = '<p class="no-campaigns">Loading…</p>';
+
+      try {
+        const res = await fetch(`/api/campaign-stats?key=${encodeURIComponent(adminKey)}`);
+        if (res.status === 401) {
+          sessionStorage.removeItem("adminKey");
+          document.getElementById("dashboard").classList.remove("active");
+          document.getElementById("authGate").classList.add("active");
+          document.getElementById("keyInput").value = "";
+          document.getElementById("keyInput").placeholder = "Invalid key — try again";
+          return;
+        }
+
+        const data = await res.json();
+
+        if (!data.campaigns || data.campaigns.length === 0) {
+          container.innerHTML = '<p class="no-campaigns">No campaigns yet. Upload codes below to create one.</p>';
+          return;
+        }
+
+        container.innerHTML = data.campaigns.map((c) => {
+          const pct = c.total > 0 ? Math.round((c.claimed / c.total) * 100) : 0;
+          const barClass = pct >= 90 ? "critical" : pct >= 70 ? "warning" : "";
+          const redeemUrl = `${window.location.origin}/redeem/${c.name}`;
+
+          let claimsHtml = "";
+          if (c.recentClaims && c.recentClaims.length > 0) {
+            const items = c.recentClaims
+              .map((cl) => `<li>${cl.code} — ${cl.ip} — ${new Date(cl.claimedAt).toLocaleString()}</li>`)
+              .join("");
+            claimsHtml = `
+              <details class="recent-claims">
+                <summary>Recent claims (${c.recentClaims.length})</summary>
+                <ul>${items}</ul>
+              </details>
+            `;
+          }
+
+          return `
+            <div class="campaign">
+              <div class="campaign-header">
+                <span class="campaign-name">${c.name}</span>
+                <span class="campaign-stats">${c.claimed} / ${c.total} claimed · ${c.remaining} left</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill ${barClass}" style="width: ${pct}%"></div>
+              </div>
+              <a class="campaign-link" href="${redeemUrl}" target="_blank">${redeemUrl}</a>
+              ${claimsHtml}
+            </div>
+          `;
+        }).join("");
+
+      } catch (err) {
+        container.innerHTML = `<p class="no-campaigns">Error loading stats: ${err.message}</p>`;
+      }
+    }
+
+    // ── Upload codes ───────────────────────────────────────────────
+    async function uploadCodes() {
+      const campaign = document.getElementById("campaignName").value.trim();
+      const raw = document.getElementById("codesInput").value.trim();
+      const resultEl = document.getElementById("uploadResult");
+      const btn = document.getElementById("uploadBtn");
+
+      if (!campaign) {
+        resultEl.className = "upload-result err";
+        resultEl.textContent = "Enter a campaign name.";
+        return;
+      }
+      if (!raw) {
+        resultEl.className = "upload-result err";
+        resultEl.textContent = "Paste at least one code.";
+        return;
+      }
+
+      const codes = raw.split("\n").map((l) => l.trim()).filter((l) => l.length > 0);
+
+      btn.disabled = true;
+      btn.textContent = "Uploading…";
+      resultEl.style.display = "none";
+
+      try {
+        const res = await fetch("/api/upload-codes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key: adminKey, campaign, codes }),
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          resultEl.className = "upload-result ok";
+          resultEl.textContent = `Added ${data.added} codes to "${campaign}". Total: ${data.totalCodes}, Remaining: ${data.remaining}`;
+          document.getElementById("codesInput").value = "";
+          loadStats(); // refresh
+        } else {
+          resultEl.className = "upload-result err";
+          resultEl.textContent = data.error || "Upload failed.";
+        }
+      } catch (err) {
+        resultEl.className = "upload-result err";
+        resultEl.textContent = `Network error: ${err.message}`;
+      }
+
+      btn.disabled = false;
+      btn.textContent = "Upload Codes";
+    }
+
+    // ── Init ───────────────────────────────────────────────────────
+    init();
+  </script>
+</body>
+</html>
