@@ -1,0 +1,6 @@
+name = "countdownapp"
+pages_build_output_dir = "."
+
+[[kv_namespaces]]
+binding = "OFFER_CODES"
+id = "0cf6c42df82b4e17900676c4340832ab"
