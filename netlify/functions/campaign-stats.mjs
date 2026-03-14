@@ -1,52 +1,56 @@
 import { getStore } from "@netlify/blobs";
 
-export default async (request) => {
-  if (request.method !== "GET") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), {
-      status: 405,
+export const handler = async (event) => {
+  if (event.httpMethod !== "GET") {
+    return {
+      statusCode: 405,
       headers: { "Content-Type": "application/json" },
-    });
+      body: JSON.stringify({ error: "Method not allowed" }),
+    };
   }
 
-  const url = new URL(request.url);
-  const key = url.searchParams.get("key");
+  const key = event.queryStringParameters?.key;
   const adminKey = process.env.ADMIN_KEY || "cdapp-admin-203332423423324";
 
   if (key !== adminKey) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
+    return {
+      statusCode: 401,
       headers: { "Content-Type": "application/json" },
-    });
+      body: JSON.stringify({ error: "Unauthorized" }),
+    };
   }
 
-  const store = getStore("offer-codes");
+  try {
+    const store = getStore("offer-codes");
+    const { blobs } = await store.list();
+    const campaigns = [];
 
-  // List all campaigns in the store.
-  const { blobs } = await store.list();
-  const campaigns = [];
+    for (const blob of blobs) {
+      const raw = await store.get(blob.key);
+      if (!raw) continue;
+      const data = JSON.parse(raw);
+      const total = data.codes.length;
+      const claimed = data.claims.length;
 
-  for (const blob of blobs) {
-    const raw = await store.get(blob.key);
-    if (!raw) continue;
-    const data = JSON.parse(raw);
-    const total = data.codes.length;
-    const claimed = data.claims.length;
+      campaigns.push({
+        name: blob.key,
+        total,
+        claimed,
+        remaining: total - claimed,
+        recentClaims: data.claims.slice(-10).reverse(),
+      });
+    }
 
-    campaigns.push({
-      name: blob.key,
-      total,
-      claimed,
-      remaining: total - claimed,
-      recentClaims: data.claims.slice(-10).reverse(),
-    });
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ campaigns }),
+    };
+  } catch (err) {
+    return {
+      statusCode: 500,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: err.message }),
+    };
   }
-
-  return new Response(JSON.stringify({ campaigns }), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
-};
-
-export const config = {
-  path: "/api/campaign-stats",
 };
