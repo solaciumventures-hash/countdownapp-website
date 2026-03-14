@@ -1,27 +1,6 @@
 [build]
   publish = "."
-  command = "npm install"
 
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/redeem/admin"
-  to = "/redeem/admin/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/redeem/admin/"
-  to = "/redeem/admin/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/redeem/:campaign"
-  to = "/redeem/index.html"
-  status = 200
