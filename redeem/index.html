@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Countdown — Claim Your Free Month</title>
-  <meta name="description" content="Get 1 month of Countdown Premium for free. Beautiful countdown timers with photos, widgets, and sharing.">
+  <title>Countdown — Claim 3 Months Free</title>
+  <meta name="description" content="Get 3 months of Countdown Premium for free. Beautiful countdown timers with photos, widgets, and sharing.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -205,7 +205,7 @@
 
   <div class="card">
     <img src="/images/icon.png" alt="Countdown App" class="app-icon">
-    <h1>1 Month Free</h1>
+    <h1>3 Months Free</h1>
     <p class="subtitle">Get Countdown Premium — beautiful timers with photos, widgets, and sharing.</p>
 
     <div class="features">
@@ -218,7 +218,7 @@
 
     <!-- Claim button (initial state) -->
     <button class="claim-btn" id="claimBtn" onclick="claimCode()">
-      Claim Your Free Month
+      Claim 3 Months Free
     </button>
 
     <!-- Success state -->
@@ -308,7 +308,7 @@
     function showError(msg) {
       const btn = document.getElementById("claimBtn");
       btn.disabled = false;
-      btn.textContent = "Claim Your Free Month";
+      btn.textContent = "Claim 3 Months Free";
       document.getElementById("errorMessage").textContent = msg;
       const el = document.getElementById("errorResult");
       el.style.display = "block";
