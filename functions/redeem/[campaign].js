@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+const HTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -124,7 +124,6 @@
       transform: none;
     }
 
-    /* Result states */
     .result {
       display: none;
       margin-top: 24px;
@@ -209,21 +208,19 @@
     <p class="subtitle">Get Countdown Premium — beautiful timers with photos, widgets, and sharing.</p>
 
     <div class="features">
-      <p>✨ Custom photo backgrounds</p>
-      <p>📱 Home screen &amp; lock screen widgets</p>
-      <p>🔔 Notification reminders</p>
-      <p>🎨 23 color themes</p>
-      <p>🔗 Share countdown cards</p>
+      <p>\u2728 Custom photo backgrounds</p>
+      <p>\ud83d\udcf1 Home screen &amp; lock screen widgets</p>
+      <p>\ud83d\udd14 Notification reminders</p>
+      <p>\ud83c\udfa8 23 color themes</p>
+      <p>\ud83d\udd17 Share countdown cards</p>
     </div>
 
-    <!-- Claim button (initial state) -->
     <button class="claim-btn" id="claimBtn" onclick="claimCode()">
       Claim 3 Months Free
     </button>
 
-    <!-- Success state -->
     <div class="result" id="successResult">
-      <p>🎉 Your code:</p>
+      <p>\ud83c\udf89 Your code:</p>
       <div class="code-display" id="codeDisplay"></div>
       <a class="redeem-link" id="redeemLink" href="#" target="_blank">
         Open in App Store
@@ -236,13 +233,11 @@
       </p>
     </div>
 
-    <!-- Sold out state -->
     <div class="result" id="soldOutResult">
       <p style="font-size: 18px; margin-bottom: 8px;">All codes have been claimed!</p>
       <p>Comment on our Reddit post to request a code when we restock.</p>
     </div>
 
-    <!-- Error state -->
     <div class="result" id="errorResult">
       <p id="errorMessage">Something went wrong. Please try again.</p>
     </div>
@@ -253,23 +248,18 @@
   </div>
 
   <script>
-    // ── Configuration ──────────────────────────────────────────────
-    // Replace with your actual App Store ID (numeric).
     const APP_STORE_ID = "6759678361";
 
-    // ── Get campaign slug from URL path ────────────────────────────
     function getCampaign() {
-      // URL like /redeem/iosapps → campaign = "iosapps"
-      const parts = window.location.pathname.replace(/\/+$/, "").split("/");
+      const parts = window.location.pathname.replace(/\\/+$/, "").split("/");
       const slug = parts[parts.length - 1];
       return slug && slug !== "redeem" ? slug : "default";
     }
 
-    // ── Claim code ─────────────────────────────────────────────────
     async function claimCode() {
       const btn = document.getElementById("claimBtn");
       btn.disabled = true;
-      btn.textContent = "Claiming…";
+      btn.textContent = "Claiming\u2026";
 
       try {
         const res = await fetch("/api/claim-code", {
@@ -290,7 +280,7 @@
           btn.style.display = "none";
           document.getElementById("codeDisplay").textContent = data.code;
           document.getElementById("redeemLink").href =
-            `https://apps.apple.com/redeem?ctx=offercodes&id=${APP_STORE_ID}&code=${data.code}`;
+            "https://apps.apple.com/redeem?ctx=offercodes&id=" + APP_STORE_ID + "&code=" + data.code;
           if (data.alreadyClaimed) {
             document.getElementById("alreadyNote").style.display = "block";
           }
@@ -298,7 +288,6 @@
           return;
         }
 
-        // Unexpected response.
         showError(data.error || "Something went wrong.");
       } catch (err) {
         showError("Network error. Please try again.");
@@ -317,4 +306,10 @@
     }
   </script>
 </body>
-</html>
+</html>`;
+
+export async function onRequestGet(context) {
+  return new Response(HTML, {
+    headers: { "Content-Type": "text/html; charset=utf-8" },
+  });
+}

@@ -1,3 +1,2 @@
 /redeem/admin /redeem/admin/index.html 200
 /redeem/admin/ /redeem/admin/index.html 200
-/redeem/:campaign /redeem/claim.html 200
