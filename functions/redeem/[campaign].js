@@ -309,6 +309,13 @@ const HTML = `<!DOCTYPE html>
 </html>`;
 
 export async function onRequestGet(context) {
+  const campaign = context.params.campaign;
+
+  // Let /redeem/admin fall through to the static admin page
+  if (campaign === "admin") {
+    return context.next();
+  }
+
   return new Response(HTML, {
     headers: { "Content-Type": "text/html; charset=utf-8" },
   });
